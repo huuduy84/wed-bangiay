@@ -3,8 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Input, Typography, Badge, Dropdown, message, type MenuProps } from "antd";
 import {
   SearchOutlined, ShoppingCartOutlined, UserOutlined,
-  PhoneOutlined, CaretRightOutlined, CaretLeftOutlined,
-  LogoutOutlined
+  PhoneOutlined, LogoutOutlined
 } from "@ant-design/icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -55,29 +54,47 @@ export default function HeaderComponent() {
 
   return (
     <>
-      {/* CSS RESPONSIVE - chỉ áp dụng trên mobile dọc, không ảnh hưởng desktop */}
       <style>{`
+        /* Chữ chạy marquee */
+        .marquee-wrapper {
+          overflow: hidden;
+          flex: 1;
+          mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        }
+        .marquee-track {
+          display: flex;
+          width: max-content;
+          animation: marquee 18s linear infinite;
+        }
+        .marquee-track span {
+          padding: 0 40px;
+          white-space: nowrap;
+          font-weight: bold;
+          letter-spacing: 1px;
+          font-size: 13px;
+        }
+        @keyframes marquee {
+          0%   { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+
+        /* MOBILE dọc */
         @media (max-width: 768px) {
-          .topbar-hotline { display: none !important; }
-          .topbar-promo {
-            font-size: 11px !important;
-            flex: 1;
-            justify-content: center;
-            text-align: center;
-          }
-          .topbar-actions { gap: 12px !important; }
-          .topbar-actions span { display: none; }
           .topbar-wrap {
-            padding: 0 4% !important;
-            height: auto !important;
-            min-height: 36px !important;
+            padding: 0 3% !important;
+            height: 36px !important;
+            font-size: 11px !important;
           }
+          .topbar-hotline span { display: none; }
+          .topbar-hotline { gap: 4px !important; }
+          .topbar-actions { gap: 10px !important; }
+          .topbar-actions .acc-label { display: none; }
           .logo-search-wrap {
-            padding: 0 4% !important;
+            padding: 0 3% !important;
             height: 64px !important;
           }
-          .logo-search-wrap img { height: 40px !important; }
-          .search-box { width: 60% !important; }
+          .logo-search-wrap img { height: 38px !important; }
+          .search-box { width: 62% !important; }
           .nav-wrap {
             gap: 0 !important;
             justify-content: space-around !important;
@@ -86,11 +103,12 @@ export default function HeaderComponent() {
           .nav-wrap a {
             font-size: 12px !important;
             letter-spacing: 0 !important;
-            text-align: center !important;
             flex: 1 !important;
+            text-align: center !important;
             display: flex !important;
             justify-content: center !important;
             align-items: center !important;
+            height: 100% !important;
           }
           .nav-divider { display: none !important; }
         }
@@ -98,7 +116,7 @@ export default function HeaderComponent() {
 
       <header style={{ position: "fixed", top: 0, width: "100%", zIndex: 1000, background: "#fff", boxShadow: "0 2px 10px rgba(0,0,0,0.1)" }}>
 
-        {/* 1. THANH ĐEN (TOP BAR) */}
+        {/* 1. THANH ĐEN */}
         <div
           className="topbar-wrap"
           style={{
@@ -107,40 +125,45 @@ export default function HeaderComponent() {
             color: "#fff",
             padding: "0 10%",
             display: "flex",
-            justifyContent: "space-between",
             alignItems: "center",
+            gap: "12px",
             fontSize: "13px",
           }}
         >
-          {/* Hotline - ẩn trên mobile */}
-          <div className="topbar-hotline" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <PhoneOutlined /> <span>Hotline: 0369739651</span>
+          {/* Hotline - luôn hiển thị, ẩn chữ số trên mobile nhỏ xíu */}
+          <div className="topbar-hotline" style={{ display: "flex", alignItems: "center", gap: "6px", whiteSpace: "nowrap", flexShrink: 0 }}>
+            <PhoneOutlined />
+            <span>0369739651</span>
           </div>
 
-          {/* Quảng cáo - luôn hiển thị, căn giữa trên mobile */}
-          <div
-            className="topbar-promo"
-            style={{ display: "flex", alignItems: "center", gap: "10px", letterSpacing: "1px", fontWeight: "bold" }}
-          >
-            <CaretRightOutlined />
-            <span>GIẢM 20% CHO SẢN PHẨM MỚI</span>
-            <CaretLeftOutlined />
+          {/* Chữ chạy marquee */}
+          <div className="marquee-wrapper">
+            <div className="marquee-track">
+              <span>► GIẢM 20% CHO SẢN PHẨM MỚI ◄</span>
+              <span>► FREE SHIP ĐƠN TRÊN 500K ◄</span>
+              <span>► NHẬP MÃ ZUNO2026 ĐỂ GIẢM THÊM ◄</span>
+              <span>► GIẢM 20% CHO SẢN PHẨM MỚI ◄</span>
+              <span>► FREE SHIP ĐƠN TRÊN 500K ◄</span>
+              <span>► NHẬP MÃ ZUNO2026 ĐỂ GIẢM THÊM ◄</span>
+            </div>
           </div>
 
-          {/* Tài khoản & Giỏ hàng - ẩn chữ trên mobile, chỉ giữ icon */}
-          <div className="topbar-actions" style={{ display: "flex", gap: "25px" }}>
+          {/* Tài khoản & Giỏ hàng */}
+          <div className="topbar-actions" style={{ display: "flex", gap: "20px", alignItems: "center", flexShrink: 0 }}>
             <Dropdown menu={{ items: menuItems }} placement="bottomRight" arrow>
               <div style={{ display: "flex", alignItems: "center", cursor: "pointer", gap: "5px" }}>
-                <UserOutlined style={{ fontSize: "16px" }} />
-                <span style={{ fontWeight: "500" }}>{currentUser ? currentUser.ten : "Tài khoản"}</span>
+                <UserOutlined style={{ fontSize: "15px" }} />
+                <span className="acc-label" style={{ fontWeight: "500" }}>
+                  {currentUser ? currentUser.ten : "Tài khoản"}
+                </span>
               </div>
             </Dropdown>
 
             <Link href="/gio-hang" style={{ color: "#fff", textDecoration: "none", display: "flex", alignItems: "center", gap: "5px" }}>
               <Badge count={0} size="small" offset={[5, 0]}>
-                <ShoppingCartOutlined style={{ fontSize: "18px", color: "#fff" }} />
+                <ShoppingCartOutlined style={{ fontSize: "17px", color: "#fff" }} />
               </Badge>
-              <span style={{ fontWeight: "500" }}>Giỏ hàng</span>
+              <span className="acc-label" style={{ fontWeight: "500" }}>Giỏ hàng</span>
             </Link>
           </div>
         </div>
