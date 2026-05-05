@@ -2,11 +2,10 @@
 import React, { useState, useMemo, useEffect, Suspense } from "react";
 import { Row, Col, Typography, Pagination, Breadcrumb, Empty } from "antd";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation"; 
+import { useSearchParams } from "next/navigation";
 
 const { Text, Title } = Typography;
 
-// DANH SÁCH SẢN PHẨM GIỮ NGUYÊN
 const allProducts = [
   { id: 1, name: "Adidas Forum Low 'Core Black'", brand: "Adidas", price: 3500000, img: "/adidas-forum.png", category: "SẢN PHẨM", popularity: 95, salesCount: 150, date: "2026-05-01", collection: "Classic" },
   { id: 2, name: "New Balance 1906R 'White Gold'", brand: "New Balance", price: 3500000, img: "/nb-1906r.png", category: "SẢN PHẨM", popularity: 88, salesCount: 120, date: "2026-05-02", collection: "Retro" },
@@ -25,10 +24,9 @@ const allProducts = [
   { id: 15, name: "Nón Kết MLB Boston Red Sox", brand: "MLB", price: 850000, img: "/non-mlb.png", category: "PHỤ KIỆN", popularity: 95, salesCount: 500, date: "2026-05-05" },
 ];
 
-// TÁCH NỘI DUNG RA COMPONENT RIÊNG ĐỂ DÙNG SUSPENSE
 function ShopContent() {
   const searchParams = useSearchParams();
-  const searchKeyword = searchParams.get("search") || ""; 
+  const searchKeyword = searchParams.get("search") || "";
 
   const [activeCategory, setActiveCategory] = useState("SẢN PHẨM");
   const [sortBy, setSortBy] = useState("PHỔ BIẾN");
@@ -42,8 +40,8 @@ function ShopContent() {
   const filteredProducts = useMemo(() => {
     let result = allProducts;
     if (searchKeyword) {
-      return result.filter(p => 
-        p.name.toLowerCase().includes(searchKeyword.toLowerCase()) || 
+      return result.filter(p =>
+        p.name.toLowerCase().includes(searchKeyword.toLowerCase()) ||
         p.brand.toLowerCase().includes(searchKeyword.toLowerCase())
       );
     }
@@ -58,45 +56,58 @@ function ShopContent() {
 
   return (
     <div style={{ marginTop: "200px", padding: "0 10%", marginBottom: "50px" }}>
-      <Breadcrumb style={{ marginBottom: "20px" }} items={[{ title: 'Trang chủ' }, { title: 'Cửa hàng' }]} />
+      <Breadcrumb style={{ marginBottom: "20px" }} items={[{ title: "Trang chủ" }, { title: "Cửa hàng" }]} />
 
       {searchKeyword && (
         <div style={{ marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <Title level={4} style={{ margin: 0 }}>Kết quả tìm kiếm cho: <span style={{ color: "#dc2626" }}>"{searchKeyword}"</span></Title>
+          <Title level={4} style={{ margin: 0 }}>
+            Kết quả tìm kiếm cho: <span style={{ color: "#dc2626" }}>"{searchKeyword}"</span>
+          </Title>
           <Link href="/cua-hang" style={{ color: "#1890ff", fontWeight: "bold" }}>Xóa tìm kiếm</Link>
         </div>
       )}
 
-      <Row gutter={40}>
-        <Col span={6}>
+      <Row gutter={[24, 24]}>
+        <Col xs={24} lg={6}>
           <div style={{ position: "sticky", top: "240px", zIndex: 100 }}>
-             <div style={{ background: "#eee", padding: "20px 0", borderRadius: "8px" }}>
-                <div style={{ padding: "0 20px", fontWeight: "bold", borderBottom: "1px solid #ccc", paddingBottom: "10px", marginBottom: "15px", fontSize: "16px" }}>DANH MỤC</div>
-                <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-                  {["SẢN PHẨM", "ĐANG GIẢM GIÁ", "QUẦN ÁO", "PHỤ KIỆN"].map(cat => (
-                    <li key={cat} 
-                        onClick={() => { setActiveCategory(cat); setCurrentPage(1); }}
-                        style={{ 
-                          padding: "15px 25px", cursor: "pointer", fontWeight: "bold", transition: "0.3s",
-                          color: activeCategory === cat ? "#dc2626" : "#333",
-                          background: activeCategory === cat ? "#fff" : "transparent",
-                          borderLeft: activeCategory === cat ? "4px solid #dc2626" : "none"
-                        }}>
-                      {cat}
-                    </li>
-                  ))}
-                </ul>
-             </div>
+            <div style={{ background: "#eee", padding: "20px 0", borderRadius: "8px" }}>
+              <div style={{ padding: "0 20px", fontWeight: "bold", borderBottom: "1px solid #ccc", paddingBottom: "10px", marginBottom: "15px", fontSize: "16px" }}>
+                DANH MỤC
+              </div>
+              <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                {["SẢN PHẨM", "ĐANG GIẢM GIÁ", "QUẦN ÁO", "PHỤ KIỆN"].map(cat => (
+                  <li
+                    key={cat}
+                    onClick={() => { setActiveCategory(cat); setCurrentPage(1); }}
+                    style={{
+                      padding: "15px 25px",
+                      cursor: "pointer",
+                      fontWeight: "bold",
+                      transition: "0.3s",
+                      color: activeCategory === cat ? "#dc2626" : "#333",
+                      background: activeCategory === cat ? "#fff" : "transparent",
+                      borderLeft: activeCategory === cat ? "4px solid #dc2626" : "none",
+                    }}
+                  >
+                    {cat}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </Col>
 
-        <Col span={18}>
-          <div style={{ background: "#eee", padding: "15px 20px", display: "flex", gap: "30px", marginBottom: "30px", borderRadius: "8px" }}>
+        <Col xs={24} lg={18}>
+          <div style={{ background: "#eee", padding: "15px 20px", display: "flex", gap: "30px", marginBottom: "30px", borderRadius: "8px", flexWrap: "wrap" }}>
             <span style={{ fontWeight: "bold" }}>SẮP XẾP THEO</span>
             {["PHỔ BIẾN", "MỚI NHẤT", "BÁN CHẠY"].map(item => (
-              <span key={item} 
-                    style={{ cursor: "pointer", color: sortBy === item ? "#dc2626" : "#333", fontWeight: sortBy === item ? "bold" : "normal" }}
-                    onClick={() => setSortBy(item)}>{item}</span>
+              <span
+                key={item}
+                style={{ cursor: "pointer", color: sortBy === item ? "#dc2626" : "#333", fontWeight: sortBy === item ? "bold" : "normal" }}
+                onClick={() => setSortBy(item)}
+              >
+                {item}
+              </span>
             ))}
           </div>
 
@@ -106,13 +117,22 @@ function ShopContent() {
             </div>
           ) : (
             <Row gutter={[30, 40]}>
-              {displayProducts.map((item) => (
-                <Col span={12} key={item.id}>
-                  <Link href={`/san-pham/${item.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+              {displayProducts.map(item => (
+                <Col xs={12} md={8} lg={12} key={item.id}>
+                  <Link href={`/san-pham/${item.id}`} style={{ textDecoration: "none", color: "inherit" }}>
                     <div className="product-card" style={{ transition: "0.3s", cursor: "pointer" }}>
                       <div style={{ background: "#f9f9f9", height: "300px", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "15px", borderRadius: "12px", position: "relative", overflow: "hidden" }}>
-                        <img src={item.img} alt={item.name} onError={(e) => (e.currentTarget.src = "https://via.placeholder.com/300x300?text=San+Pham")} style={{ maxWidth: "85%", maxHeight: "80%", objectFit: "contain" }} />
-                        {item.discount && <div style={{ position: "absolute", top: "12px", right: "12px", background: "#fde68a", color: "#f59e0b", padding: "4px 10px", fontWeight: "bold", borderRadius: "6px" }}>-{item.discount}%</div>}
+                        <img
+                          src={item.img}
+                          alt={item.name}
+                          onError={e => (e.currentTarget.src = "https://via.placeholder.com/300x300?text=San+Pham")}
+                          style={{ maxWidth: "85%", maxHeight: "80%", objectFit: "contain" }}
+                        />
+                        {item.discount && (
+                          <div style={{ position: "absolute", top: "12px", right: "12px", background: "#fde68a", color: "#f59e0b", padding: "4px 10px", fontWeight: "bold", borderRadius: "6px" }}>
+                            -{item.discount}%
+                          </div>
+                        )}
                       </div>
                       <Text style={{ fontSize: "12px", color: "#888", fontStyle: "italic" }}>{item.brand}</Text>
                       <Title level={5} style={{ fontSize: "16px", margin: "5px 0", minHeight: "40px" }}>{item.name}</Title>
@@ -125,7 +145,13 @@ function ShopContent() {
           )}
 
           <div style={{ marginTop: "50px", display: "flex", justifyContent: "center" }}>
-            <Pagination current={currentPage} total={filteredProducts.length} pageSize={pageSize} onChange={(p) => setCurrentPage(p)} showSizeChanger={false} />
+            <Pagination
+              current={currentPage}
+              total={filteredProducts.length}
+              pageSize={pageSize}
+              onChange={p => setCurrentPage(p)}
+              showSizeChanger={false}
+            />
           </div>
         </Col>
       </Row>
@@ -133,7 +159,6 @@ function ShopContent() {
   );
 }
 
-// COMPONENT CHÍNH ĐƯỢC EXPORT
 export default function ShopPage() {
   return (
     <Suspense fallback={<div style={{ marginTop: "200px", textAlign: "center" }}>Đang tải cửa hàng...</div>}>
