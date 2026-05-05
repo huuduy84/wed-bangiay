@@ -1,11 +1,12 @@
 "use client";
 import React, { useState, useMemo, useEffect } from "react";
-import { Row, Col, Typography, Pagination, Breadcrumb, Card } from "antd";
+import { Row, Col, Typography, Pagination, Breadcrumb, Card, Empty } from "antd";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation"; 
 
 const { Text, Title } = Typography;
 
-// DANH SÁCH DỮ LIỆU GỐC CỦA BẠN (15 sản phẩm)
+// GIỮ NGUYÊN DANH SÁCH 15 SẢN PHẨM GỐC CỦA BẠN
 const allProducts = [
   { id: 1, name: "Adidas Forum Low 'Core Black'", brand: "Adidas", price: 3500000, img: "/adidas-forum.png", category: "SẢN PHẨM", popularity: 95, salesCount: 150, date: "2026-05-01", collection: "Classic" },
   { id: 2, name: "New Balance 1906R 'White Gold'", brand: "New Balance", price: 3500000, img: "/nb-1906r.png", category: "SẢN PHẨM", popularity: 88, salesCount: 120, date: "2026-05-02", collection: "Retro" },
@@ -25,6 +26,9 @@ const allProducts = [
 ];
 
 export default function ShopPage() {
+  const searchParams = useSearchParams();
+  const searchKeyword = searchParams.get("search") || ""; 
+
   const [activeCategory, setActiveCategory] = useState("SẢN PHẨM");
   const [sortBy, setSortBy] = useState("PHỔ BIẾN");
   const [currentPage, setCurrentPage] = useState(1);
@@ -32,21 +36,42 @@ export default function ShopPage() {
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [activeCategory, currentPage]);
+  }, [activeCategory, currentPage, searchKeyword]);
 
   const filteredProducts = useMemo(() => {
-    let result = allProducts.filter(p => p.category === activeCategory || (activeCategory === "SẢN PHẨM" && p.category === "ĐANG GIẢM GIÁ"));
+    let result = allProducts;
+
+    // Logic lọc theo tìm kiếm
+    if (searchKeyword) {
+      return result.filter(p => 
+        p.name.toLowerCase().includes(searchKeyword.toLowerCase()) || 
+        p.brand.toLowerCase().includes(searchKeyword.toLowerCase())
+      );
+    }
+
+    // Logic lọc theo danh mục (như code gốc của bạn)
+    result = result.filter(p => p.category === activeCategory || (activeCategory === "SẢN PHẨM" && p.category === "ĐANG GIẢM GIÁ"));
+    
+    // Sắp xếp
     if (sortBy === "PHỔ BIẾN") result.sort((a, b) => b.popularity - a.popularity);
     else if (sortBy === "MỚI NHẤT") result.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     else if (sortBy === "BÁN CHẠY") result.sort((a, b) => b.salesCount - a.salesCount);
+    
     return result;
-  }, [activeCategory, sortBy]);
+  }, [activeCategory, sortBy, searchKeyword]);
 
   const displayProducts = filteredProducts.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   return (
     <div style={{ marginTop: "200px", padding: "0 10%", marginBottom: "50px" }}>
       <Breadcrumb style={{ marginBottom: "20px" }} items={[{ title: 'Trang chủ' }, { title: 'Cửa hàng' }]} />
+
+      {searchKeyword && (
+        <div style={{ marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <Title level={4} style={{ margin: 0 }}>Kết quả tìm kiếm cho: <span style={{ color: "#dc2626" }}>"{searchKeyword}"</span></Title>
+          <Link href="/cua-hang" style={{ color: "#1890ff", fontWeight: "bold" }}>Xóa tìm kiếm</Link>
+        </div>
+      )}
 
       <Row gutter={40}>
         <Col span={6}>
@@ -81,23 +106,29 @@ export default function ShopPage() {
             ))}
           </div>
 
-          <Row gutter={[30, 40]}>
-            {displayProducts.map((item) => (
-              <Col span={12} key={item.id}>
-                <Link href={`/san-pham/${item.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                  <div className="product-card" style={{ transition: "0.3s", cursor: "pointer" }}>
-                    <div style={{ background: "#f9f9f9", height: "300px", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "15px", borderRadius: "12px", position: "relative", overflow: "hidden" }}>
-                      <img src={item.img} alt={item.name} style={{ maxWidth: "85%", maxHeight: "80%", objectFit: "contain" }} />
-                      {item.discount && <div style={{ position: "absolute", top: "12px", right: "12px", background: "#fde68a", color: "#f59e0b", padding: "4px 10px", fontWeight: "bold", borderRadius: "6px" }}>-{item.discount}%</div>}
+          {filteredProducts.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "100px 0" }}>
+              <Empty description="Không tìm thấy sản phẩm nào khớp với từ khóa của bạn." />
+            </div>
+          ) : (
+            <Row gutter={[30, 40]}>
+              {displayProducts.map((item) => (
+                <Col span={12} key={item.id}>
+                  <Link href={`/san-pham/${item.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <div className="product-card" style={{ transition: "0.3s", cursor: "pointer" }}>
+                      <div style={{ background: "#f9f9f9", height: "300px", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "15px", borderRadius: "12px", position: "relative", overflow: "hidden" }}>
+                        <img src={item.img} alt={item.name} onError={(e) => (e.currentTarget.src = "https://via.placeholder.com/300x300?text=San+Pham")} style={{ maxWidth: "85%", maxHeight: "80%", objectFit: "contain" }} />
+                        {item.discount && <div style={{ position: "absolute", top: "12px", right: "12px", background: "#fde68a", color: "#f59e0b", padding: "4px 10px", fontWeight: "bold", borderRadius: "6px" }}>-{item.discount}%</div>}
+                      </div>
+                      <Text style={{ fontSize: "12px", color: "#888", fontStyle: "italic" }}>{item.brand}</Text>
+                      <Title level={5} style={{ fontSize: "16px", margin: "5px 0", minHeight: "40px" }}>{item.name}</Title>
+                      <Text strong style={{ fontSize: "18px", color: "#dc2626" }}>{item.price.toLocaleString()} ₫</Text>
                     </div>
-                    <Text style={{ fontSize: "12px", color: "#888", fontStyle: "italic" }}>{item.brand}</Text>
-                    <Title level={5} style={{ fontSize: "16px", margin: "5px 0", minHeight: "40px" }}>{item.name}</Title>
-                    <Text strong style={{ fontSize: "18px", color: "#dc2626" }}>{item.price.toLocaleString()} ₫</Text>
-                  </div>
-                </Link>
-              </Col>
-            ))}
-          </Row>
+                  </Link>
+                </Col>
+              ))}
+            </Row>
+          )}
 
           <div style={{ marginTop: "50px", display: "flex", justifyContent: "center" }}>
             <Pagination current={currentPage} total={filteredProducts.length} pageSize={pageSize} onChange={(p) => setCurrentPage(p)} showSizeChanger={false} />

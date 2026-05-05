@@ -14,6 +14,7 @@ const { Text } = Typography;
 export default function HeaderComponent() {
   const router = useRouter();
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [searchValue, setSearchValue] = useState("");
 
   useEffect(() => {
     const updateUser = () => {
@@ -31,6 +32,17 @@ export default function HeaderComponent() {
       clearInterval(interval);
     };
   }, []);
+
+  // Hàm xử lý tìm kiếm — chuyển sang trang cửa hàng với query
+  const handleSearch = () => {
+    const keyword = searchValue.trim();
+    if (keyword) {
+      // Đẩy từ khóa lên URL để trang Cửa hàng nhận diện
+      router.push(`/cua-hang?search=${encodeURIComponent(keyword)}`);
+    } else {
+      router.push(`/cua-hang`);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("isLoggedIn");
@@ -50,7 +62,7 @@ export default function HeaderComponent() {
 
   return (
     <header style={{ position: "fixed", top: 0, width: "100%", zIndex: 1000, background: "#fff", boxShadow: "0 2px 10px rgba(0,0,0,0.1)" }}>
-      {/* 1. THANH ĐEN (TOP BAR) - Giữ nguyên phong cách của bạn nhưng căn chỉnh chuẩn hơn */}
+      {/* 1. THANH ĐEN (TOP BAR) */}
       <div style={{ 
         height: "40px", 
         background: "#000", 
@@ -102,8 +114,16 @@ export default function HeaderComponent() {
 
         <div style={{ width: '50%' }}>
           <Input 
-            suffix={<SearchOutlined style={{ fontSize: '18px', color: '#888' }} />} 
+            suffix={
+              <SearchOutlined 
+                style={{ fontSize: '18px', color: '#888', cursor: 'pointer' }} 
+                onClick={handleSearch}
+              />
+            } 
             placeholder="Bạn đang tìm kiếm gì?" 
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            onPressEnter={handleSearch}
             style={{ borderRadius: '25px', height: '42px', background: '#f5f5f5', border: 'none' }}
           />
         </div>
