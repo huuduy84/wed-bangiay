@@ -1,12 +1,12 @@
 "use client";
-import React, { useState, useMemo, useEffect } from "react";
-import { Row, Col, Typography, Pagination, Breadcrumb, Card, Empty } from "antd";
+import React, { useState, useMemo, useEffect, Suspense } from "react";
+import { Row, Col, Typography, Pagination, Breadcrumb, Empty } from "antd";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation"; 
 
 const { Text, Title } = Typography;
 
-// GIỮ NGUYÊN DANH SÁCH 15 SẢN PHẨM GỐC CỦA BẠN
+// DANH SÁCH SẢN PHẨM GIỮ NGUYÊN
 const allProducts = [
   { id: 1, name: "Adidas Forum Low 'Core Black'", brand: "Adidas", price: 3500000, img: "/adidas-forum.png", category: "SẢN PHẨM", popularity: 95, salesCount: 150, date: "2026-05-01", collection: "Classic" },
   { id: 2, name: "New Balance 1906R 'White Gold'", brand: "New Balance", price: 3500000, img: "/nb-1906r.png", category: "SẢN PHẨM", popularity: 88, salesCount: 120, date: "2026-05-02", collection: "Retro" },
@@ -25,7 +25,8 @@ const allProducts = [
   { id: 15, name: "Nón Kết MLB Boston Red Sox", brand: "MLB", price: 850000, img: "/non-mlb.png", category: "PHỤ KIỆN", popularity: 95, salesCount: 500, date: "2026-05-05" },
 ];
 
-export default function ShopPage() {
+// TÁCH NỘI DUNG RA COMPONENT RIÊNG ĐỂ DÙNG SUSPENSE
+function ShopContent() {
   const searchParams = useSearchParams();
   const searchKeyword = searchParams.get("search") || ""; 
 
@@ -40,23 +41,16 @@ export default function ShopPage() {
 
   const filteredProducts = useMemo(() => {
     let result = allProducts;
-
-    // Logic lọc theo tìm kiếm
     if (searchKeyword) {
       return result.filter(p => 
         p.name.toLowerCase().includes(searchKeyword.toLowerCase()) || 
         p.brand.toLowerCase().includes(searchKeyword.toLowerCase())
       );
     }
-
-    // Logic lọc theo danh mục (như code gốc của bạn)
     result = result.filter(p => p.category === activeCategory || (activeCategory === "SẢN PHẨM" && p.category === "ĐANG GIẢM GIÁ"));
-    
-    // Sắp xếp
     if (sortBy === "PHỔ BIẾN") result.sort((a, b) => b.popularity - a.popularity);
     else if (sortBy === "MỚI NHẤT") result.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     else if (sortBy === "BÁN CHẠY") result.sort((a, b) => b.salesCount - a.salesCount);
-    
     return result;
   }, [activeCategory, sortBy, searchKeyword]);
 
@@ -136,5 +130,14 @@ export default function ShopPage() {
         </Col>
       </Row>
     </div>
+  );
+}
+
+// COMPONENT CHÍNH ĐƯỢC EXPORT
+export default function ShopPage() {
+  return (
+    <Suspense fallback={<div style={{ marginTop: "200px", textAlign: "center" }}>Đang tải cửa hàng...</div>}>
+      <ShopContent />
+    </Suspense>
   );
 }
