@@ -69,9 +69,10 @@ export default function Home() {
 
         <div className="suggest-wrap" style={{ padding: "0 10%", maxWidth: "1300px", margin: "0 auto" }}>
           <Row>
-            <ProductCard id={9} title="Nike Air Max 270 React" price="₫2,800,000" colors={["#000", "#3b82f6", "#06b6d4"]} imgSrc="/nike-270.png" />
-            <ProductCard id={6} title="Nike Dunk Low 'Panda'" price="₫3,200,000" colors={["#000", "#fff"]} imgSrc="/nike-panda.png" />
-            <ProductCard id={1} title="Adidas Forum Low 'Core Black'" price="₫3,500,000" colors={["#000", "#fff", "#ef4444"]} isLast imgSrc="/adidas-forum.png" />
+            {/* CẬP NHẬT: Đổi đường dẫn ảnh sang chuẩn mới (/products/ID-1.jpg) và gán đúng ID */}
+            <ProductCard id={9} title="Nike Air Max 270 React" price="₫2,800,000" colors={["#000", "#3b82f6", "#06b6d4"]} imgSrc="/products/9-1.jpg" />
+            <ProductCard id={1} title="Nike Dunk Low 'Panda'" price="₫3,200,000" colors={["#000", "#fff"]} imgSrc="/products/1-1.jpg" />
+            <ProductCard id={6} title="Adidas Forum Low 'Core Black'" price="₫3,500,000" colors={["#000", "#fff", "#ef4444"]} isLast imgSrc="/products/6-1.jpg" />
           </Row>
 
           <div style={{ textAlign: "center", marginTop: "40px" }}>

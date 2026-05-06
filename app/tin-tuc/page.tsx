@@ -5,8 +5,8 @@ import Link from "next/link";
 
 const { Title, Paragraph, Text } = Typography;
 
-// DỮ LIỆU TỔNG CHO 8 BÀI VIẾT
-export const newsList = [
+// DỮ LIỆU TỔNG CHO 8 BÀI VIẾT (Đã tự động hóa hình ảnh)
+const baseNewsList = [
   { 
     id: 1, 
     title: "Trải nghiệm sự êm ái với Reebok Walk Ultra 7 DMX MAX", 
@@ -14,7 +14,7 @@ export const newsList = [
     content: `Reebok Walk Ultra 7 DMX MAX không chỉ là một đôi giày, đó là một trải nghiệm di chuyển hoàn toàn mới. Công nghệ DMX MAX sử dụng dòng không khí chuyển động bên dưới lòng bàn chân, giúp giảm áp lực lên gót chân và mũi chân một cách tối đa. 
 
     Trong phiên bản thứ 7 này, lớp da upper đã được xử lý mềm hơn, giúp ôm sát nhưng không gây bí bách. Đế ngoài bằng cao su chống trượt được thiết kế đặc biệt cho những người thường xuyên đi bộ trên bề mặt cứng như bê tông hay gạch men. Đây chắc chắn là người bạn đồng hành lý tưởng cho sức khỏe xương khớp của bạn.`,
-    img: "/news-1.png", date: "10/05/2026", author: "Admin", tags: ["Reebok", "Health"] 
+    date: "10/05/2026", author: "Admin", tags: ["Reebok", "Health"] 
   },
   { 
     id: 2, 
@@ -23,7 +23,7 @@ export const newsList = [
     content: `Hoka Kaha 2 Low GTX mang đến sự kết hợp hoàn hảo giữa trọng lượng nhẹ và khả năng bảo vệ tối ưu. Với đệm đế giữa đặc trưng của Hoka, đôi giày cung cấp sự êm ái tuyệt vời ngay cả trên những cung đường đá sỏi gồ ghề. 
 
     Lớp màng GORE-TEX đảm bảo chân bạn luôn khô ráo trong mọi điều kiện thời tiết. Đặc biệt, công nghệ gót giày HUBBLE® giúp chuyển đổi bước chân mượt mà hơn, giảm mệt mỏi cho những chuyến đi dài ngày.`,
-    img: "/news-2.png", date: "08/05/2026", author: "Admin", tags: ["Hoka", "Hiking"] 
+    date: "08/05/2026", author: "Admin", tags: ["Hoka", "Hiking"] 
   },
   { 
     id: 3, 
@@ -32,7 +32,7 @@ export const newsList = [
     content: `Adidas Adizero Adios 9 là minh chứng cho việc không ngừng cải tiến tốc độ. Trọng lượng của đôi giày đã được giảm xuống mức tối thiểu nhờ lớp lưới siêu thoáng khí phía trên. 
 
     Trái tim của Adios 9 chính là lớp đệm Lightstrike Pro kép, cung cấp độ đàn hồi cực cao. Thanh năng lượng ENERGYTORSION 2.0 giúp tăng độ cứng vững cho đế giày, biến mỗi bước chạy thành một cú hích về phía trước. Đây là lựa chọn hàng đầu cho các cuộc đua từ 10km đến Marathon.`,
-    img: "/news-3.png", date: "05/05/2026", author: "Admin", tags: ["Adidas", "Running"] 
+    date: "05/05/2026", author: "Admin", tags: ["Adidas", "Running"] 
   },
   { 
     id: 4, 
@@ -41,7 +41,7 @@ export const newsList = [
     content: `Nửa đầu năm 2026 chứng kiến sự bùng nổ của các phối màu Retro được xử lý bằng chất liệu hiện đại. Các phiên bản 'Reimagined' tiếp tục làm mưa làm gió trên thị trường với hiệu ứng da nứt và màu sắc vintage.
 
     Đáng chú ý nhất là sự trở lại của phối màu OG trên dáng cổ thấp (Low OG), thu hút sự quan tâm lớn. Sự kết hợp giữa di sản của Michael Jordan và tư duy thiết kế đương đại vẫn là công thức chiến thắng của nhà Jumpman năm nay.`,
-    img: "/news-4.png", date: "02/05/2026", author: "Admin", tags: ["Jordan", "Lifestyle"] 
+    date: "02/05/2026", author: "Admin", tags: ["Jordan", "Lifestyle"] 
   },
   { 
     id: 5, 
@@ -50,7 +50,7 @@ export const newsList = [
     content: `ASICS tiếp tục khẳng định vị thế trong dòng giày chạy bộ hằng ngày với Gel Cumulus 27. Điểm cải tiến đáng giá nhất là công nghệ PureGEL nhẹ hơn và êm hơn 65% so với phiên bản cũ.
 
     Đệm FF BLAST™ PLUS giúp mỗi bước tiếp đất trở nên mềm mại và phản hồi lực tốt hơn. Thiết kế thân giày bằng lưới dệt kỹ thuật mang lại sự thoải mái tối đa cho bàn chân. Đây là đôi giày không thể thiếu cho những ai tìm kiếm sự ổn định và bền bỉ.`,
-    img: "/news-5.png", date: "28/04/2026", author: "Admin", tags: ["Asics", "Gel"] 
+    date: "28/04/2026", author: "Admin", tags: ["Asics", "Gel"] 
   },
   { 
     id: 6, 
@@ -59,7 +59,7 @@ export const newsList = [
     content: `Blockcore không chỉ là một trào lưu nhất thời, nó đã trở thành một phong cách sống trong năm 2026. Sự kết hợp giữa văn hóa bóng đá thập niên 90 và thời trang hiện đại đã đưa Samba, Gazelle lên tầm cao mới.
 
     Năm nay, xu hướng này tiến hóa với việc sử dụng các tông màu đất và chất liệu bền vững. Việc đi một đôi giày bóng đá cổ điển cùng quần denim rộng hoặc quần short túi hộp tạo nên một vẻ ngoài cực kỳ có gu. Samba vẫn là 'vua' của mọi outfit đường phố năm nay.`,
-    img: "/news-6.png", date: "15/05/2026", author: "Admin", tags: ["Fashion", "Samba"] 
+    date: "15/05/2026", author: "Admin", tags: ["Fashion", "Samba"] 
   },
   { 
     id: 7, 
@@ -68,7 +68,7 @@ export const newsList = [
     content: `Nike Air Max DN đánh dấu một kỷ nguyên mới của dòng Air Max. Công nghệ Dynamic Air với cấu trúc túi khí bốn ống cho phép áp suất không khí thay đổi linh hoạt theo bước chân.
 
     Cảm giác 'không trọng lực' là điều mà Nike hướng tới. Phần upper được thiết kế với các đường vân 3D tạo chiều sâu thị giác mạnh mẽ. Đây là mẫu giày hoàn hảo cho những ai muốn tiên phong trong phong cách Techwear và yêu thích sự êm ái tuyệt đối.`,
-    img: "/news-7.png", date: "12/05/2026", author: "Admin", tags: ["Nike", "Air Max"] 
+    date: "12/05/2026", author: "Admin", tags: ["Nike", "Air Max"] 
   },
   { 
     id: 8, 
@@ -77,9 +77,15 @@ export const newsList = [
     content: `New Balance 1906R tiếp tục giữ vững vị thế là 'it-shoe' của năm 2026. Lấy cảm hứng từ những đôi giày chạy bộ thập niên 2000, 1906R mang đến vẻ đẹp cơ khí chi tiết với khung nhựa gót chân độc đáo.
 
     Năm nay, các phối màu 'Metallic Silver' và 'Phantom' đang dẫn đầu xu hướng. Sự thoải mái từ bộ đế đệm Acteva Lite kết hợp với phong cách cổ điển giúp 1906R dễ dàng chinh phục mọi phong cách thời trang, từ Casual đến Streetwear.`,
-    img: "/news-8.png", date: "11/05/2026", author: "Admin", tags: ["New Balance", "1906R"] 
+    date: "11/05/2026", author: "Admin", tags: ["New Balance", "1906R"] 
   }
 ];
+
+// Xuất danh sách tin tức đã tự động gán đường dẫn ảnh
+export const newsList = baseNewsList.map(news => ({
+  ...news,
+  img: `/news-${news.id}.jpg`
+}));
 
 const NewsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -119,7 +125,11 @@ const NewsPage = () => {
               <Col xs={24} md={10}>
                 <Link href={`/tin-tuc/${item.id}`}>
                   <div className="news-img-wrapper">
-                    <img src={item.img} alt={item.title} />
+                    <img 
+                      src={item.img} 
+                      alt={item.title} 
+                      onError={(e) => e.currentTarget.src = "https://via.placeholder.com/400x220?text=Tin+Tuc"} 
+                    />
                   </div>
                 </Link>
               </Col>
