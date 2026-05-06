@@ -260,8 +260,11 @@ export default function CartPage() {
       <Modal open={showQRModal} footer={null} onCancel={() => setShowQRModal(false)} centered width={450}>
         <div style={{ textAlign: "center" }}>
           <Title level={3} style={{ color: "#dc2626" }}>THANH TOÁN QR</Title>
-          <img src="https://api.vietqr.io/image/970422-0369739651-compact2.jpg?amount=0&addInfo=ZUNO" style={{ width: "100%", borderRadius: "8px" }} alt="QR" />
-          <Button type="primary" block size="large" onClick={() => { clearCart(); setShowQRModal(false); router.push("/"); message.success("Đã ghi nhận chuyển khoản!"); }} style={{ marginTop: "20px", background: "#dc2626", height: "50px" }}>TÔI ĐÃ CHUYỂN KHOẢN</Button>
+<img 
+  src={`https://api.vietqr.io/image/970422-0369739651-compact2.jpg?amount=${totalPrice}&addInfo=${orders[0]?.id || 'ZUNO_PAY'}`} 
+  style={{ width: "100%", borderRadius: "8px" }} 
+  alt="QR Thanh Toán ZUNO" 
+/>          <Button type="primary" block size="large" onClick={() => { clearCart(); setShowQRModal(false); router.push("/"); message.success("Đã ghi nhận chuyển khoản!"); }} style={{ marginTop: "20px", background: "#dc2626", height: "50px" }}>TÔI ĐÃ CHUYỂN KHOẢN</Button>
         </div>
       </Modal>
     </div>

@@ -32,6 +32,10 @@ export default function ProductDetailPage() {
   const [selectedSize, setSelectedSize] = useState("40");
 
   const [isBuyNowOpen, setIsBuyNowOpen] = useState(false);
+  // ✅ THÊM: state cho QR modal
+  const [showQRModal, setShowQRModal] = useState(false);
+  const [currentOrderId, setCurrentOrderId] = useState("");
+
   const [provinces, setProvinces] = useState<any[]>([]);
   const [districts, setDistricts] = useState<any[]>([]);
   const [wards, setWards] = useState<any[]>([]);
@@ -98,7 +102,6 @@ export default function ProductDetailPage() {
     return found;
   }, [params.id, allProducts]);
 
-  // KHÔI PHỤC HÀM XỬ LÝ ĐÁNH GIÁ
   const handleSubmitReview = () => {
     if (!userComment.trim()) return message.warning("Vui lòng nhập nội dung đánh giá!");
     const newReview = { 
@@ -117,21 +120,35 @@ export default function ProductDetailPage() {
     message.success("Cảm ơn bạn đã gửi đánh giá!");
   };
 
+  // ✅ SỬA: handleQuickOrder - thêm logic QR
   const handleQuickOrder = () => {
-    const { fullName, phone, province, district, ward, method } = shippingInfo;
+    const { fullName, phone, province, district, ward, method, payment } = shippingInfo;
     if (!fullName || !phone || !province || !district || !ward || !method) {
       return message.warning("Vui lòng điền đầy đủ thông tin giao hàng!");
     }
+
+    const orderId = "ZUNO-" + Math.floor(Math.random() * 100000);
+    setCurrentOrderId(orderId);
+
     const newOrder = {
-      id: "ZUNO-" + Math.floor(Math.random() * 100000),
+      id: orderId,
       items: [{ ...product, size: selectedSize, quantity: 1 }],
       total: product?.price || 0,
-      payment: shippingInfo.payment === "bank" ? "Chuyển khoản" : "COD",
-      date: new Date().toLocaleString("vi-VN"), status: "Đang xử lý"
+      payment: payment === "bank" ? "Chuyển khoản" : "COD",
+      date: new Date().toLocaleString("vi-VN"),
+      status: "Đang xử lý"
     };
     localStorage.setItem("userOrders", JSON.stringify([newOrder, ...JSON.parse(localStorage.getItem("userOrders") || "[]")]));
-    message.success("Đặt hàng thành công!");
-    setIsBuyNowOpen(false); router.push("/gio-hang");
+
+    if (payment === "bank") {
+      // ✅ Hiển thị QR thay vì redirect
+      setIsBuyNowOpen(false);
+      setShowQRModal(true);
+    } else {
+      message.success("Đặt hàng thành công!");
+      setIsBuyNowOpen(false);
+      router.push("/gio-hang");
+    }
   };
 
   const handleProvinceChange = (val: number) => {
@@ -232,6 +249,7 @@ export default function ProductDetailPage() {
         </Col>
       </Row>
 
+      {/* MODAL THÔNG TIN MUA HÀNG - giữ nguyên */}
       <Modal open={isBuyNowOpen} footer={null} onCancel={() => setIsBuyNowOpen(false)} width={600} centered styles={{ body: { padding: "20px" } }}>
         <div style={{ textAlign: "center" }}>
           <div style={{ background: "#b8923a", padding: "12px", marginBottom: "25px", borderRadius: "4px" }}>
@@ -256,6 +274,32 @@ export default function ProductDetailPage() {
           </Row>
           <Button onClick={handleQuickOrder} block size="large" style={{ marginTop: "30px", height: "55px", background: "#e32d2d", color: "#fff", fontWeight: "bold", border: "none", borderRadius: "4px" }}>
             XÁC NHẬN MUA HÀNG
+          </Button>
+        </div>
+      </Modal>
+
+      {/* ✅ THÊM: MODAL QR THANH TOÁN */}
+      <Modal open={showQRModal} footer={null} onCancel={() => setShowQRModal(false)} centered width={450}>
+        <div style={{ textAlign: "center" }}>
+          <Title level={3} style={{ color: "#dc2626" }}>THANH TOÁN QR</Title>
+          <img
+            src={`https://api.vietqr.io/image/970422-0369739651-compact2.jpg?amount=${product?.price || 0}&addInfo=${currentOrderId || "ZUNO_PAY"}`}
+            style={{ width: "100%", borderRadius: "8px" }}
+            alt="QR Thanh Toán ZUNO"
+          />
+          <Text type="secondary" style={{ display: "block", marginTop: "10px" }}>
+            Số tiền: <strong style={{ color: "#dc2626" }}>{(product?.price || 0).toLocaleString()} VND</strong>
+          </Text>
+          <Button
+            type="primary" block size="large"
+            onClick={() => {
+              setShowQRModal(false);
+              message.success("Đã ghi nhận chuyển khoản! Cảm ơn bạn.");
+              router.push("/gio-hang");
+            }}
+            style={{ marginTop: "20px", background: "#dc2626", height: "50px", fontWeight: "bold" }}
+          >
+            TÔI ĐÃ CHUYỂN KHOẢN
           </Button>
         </div>
       </Modal>
