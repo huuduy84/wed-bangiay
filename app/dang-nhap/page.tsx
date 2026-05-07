@@ -10,17 +10,17 @@ export default function LoginPage() {
   const router = useRouter();
 
   const onFinish = (values: any) => {
-    // Lấy danh sách tài khoản đã đăng ký từ trình duyệt
+
     const existingUsers = JSON.parse(localStorage.getItem("users") || "[]");
 
-    // Tìm xem có tài khoản nào khớp Email và Mật khẩu không
+
     const user = existingUsers.find(
       (u: any) => u.email === values.email && u.password === values.password
     );
 
     if (user) {
       message.success(`Chào mừng ${user.ten} quay trở lại!`);
-      // Lưu trạng thái đã đăng nhập để các trang khác biết
+
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("currentUser", JSON.stringify(user));
       

@@ -32,7 +32,7 @@ export default function ProductDetailPage() {
   const [selectedSize, setSelectedSize] = useState("40");
 
   const [isBuyNowOpen, setIsBuyNowOpen] = useState(false);
-  // ✅ THÊM: state cho QR modal
+  //  state cho QR modal
   const [showQRModal, setShowQRModal] = useState(false);
   const [currentOrderId, setCurrentOrderId] = useState("");
 
@@ -120,7 +120,7 @@ export default function ProductDetailPage() {
     message.success("Cảm ơn bạn đã gửi đánh giá!");
   };
 
-  // ✅ SỬA: handleQuickOrder - thêm logic QR
+  // handleQuickOrder
   const handleQuickOrder = () => {
     const { fullName, phone, province, district, ward, method, payment } = shippingInfo;
     if (!fullName || !phone || !province || !district || !ward || !method) {
@@ -141,7 +141,7 @@ export default function ProductDetailPage() {
     localStorage.setItem("userOrders", JSON.stringify([newOrder, ...JSON.parse(localStorage.getItem("userOrders") || "[]")]));
 
     if (payment === "bank") {
-      // ✅ Hiển thị QR thay vì redirect
+      //  Hiển thị QR thay vì redirect
       setIsBuyNowOpen(false);
       setShowQRModal(true);
     } else {
@@ -249,7 +249,7 @@ export default function ProductDetailPage() {
         </Col>
       </Row>
 
-      {/* MODAL THÔNG TIN MUA HÀNG - giữ nguyên */}
+      {/* MODAL THÔNG TIN MUA HÀNG */}
       <Modal open={isBuyNowOpen} footer={null} onCancel={() => setIsBuyNowOpen(false)} width={600} centered styles={{ body: { padding: "20px" } }}>
         <div style={{ textAlign: "center" }}>
           <div style={{ background: "#b8923a", padding: "12px", marginBottom: "25px", borderRadius: "4px" }}>
@@ -278,7 +278,7 @@ export default function ProductDetailPage() {
         </div>
       </Modal>
 
-      {/* ✅ THÊM: MODAL QR THANH TOÁN */}
+      {/*  MODAL QR THANH TOÁN */}
       <Modal open={showQRModal} footer={null} onCancel={() => setShowQRModal(false)} centered width={450}>
         <div style={{ textAlign: "center" }}>
           <Title level={3} style={{ color: "#dc2626" }}>THANH TOÁN QR</Title>

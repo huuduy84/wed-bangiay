@@ -5,7 +5,7 @@ import Link from "next/link";
 
 const { Title, Paragraph, Text } = Typography;
 
-// DỮ LIỆU TỔNG CHO 8 BÀI VIẾT (Đã tự động hóa hình ảnh)
+// DỮ LIỆU TỔNG CHO 8 BÀI VIẾT
 const baseNewsList = [
   { 
     id: 1, 
@@ -81,7 +81,7 @@ const baseNewsList = [
   }
 ];
 
-// Xuất danh sách tin tức đã tự động gán đường dẫn ảnh
+
 export const newsList = baseNewsList.map(news => ({
   ...news,
   img: `/news-${news.id}.jpg`

@@ -15,7 +15,7 @@ import Link from "next/link";
 const { Title, Paragraph, Text } = Typography;
 const { TextArea } = Input;
 
-// Pool 12 bình luận — mỗi bài viết sẽ lấy 2 bình luận khác nhau dựa vào id
+
 const COMMENT_POOL = [
   { author: "Hoàng Long",   avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=1",  content: "Bài viết rất hữu ích, mình cũng đang tính hốt đôi NB 1906R này!", datetime: "1 giờ trước" },
   { author: "Minh Thư",     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=2",  content: "Công nghệ đệm mới nghe ấn tượng quá, cảm ơn bài review chi tiết!", datetime: "3 giờ trước" },
@@ -36,7 +36,7 @@ const ArticleDetail = () => {
   const router = useRouter();
   const [commentInput, setCommentInput] = useState("");
 
-  // Tính 2 bình luận mặc định theo id bài (cố định, không đổi mỗi lần render)
+
   const articleId = Number(params.id) || 1;
   const defaultComments = useMemo(() => {
     const idx1 = (articleId * 3) % COMMENT_POOL.length;
@@ -44,10 +44,10 @@ const ArticleDetail = () => {
     return [COMMENT_POOL[idx1], COMMENT_POOL[idx2]];
   }, [articleId]);
 
-  // State comments bắt đầu từ 2 bình luận mặc định của bài
+
   const [comments, setComments] = useState(defaultComments);
 
-  // Lấy dữ liệu bài viết hiện tại
+  
   const article = newsList.find(item => item.id.toString() === params.id);
 
   // Bài viết liên quan
@@ -154,7 +154,7 @@ const ArticleDetail = () => {
               value={commentInput}
               onChange={(e) => setCommentInput(e.target.value)}
               onPressEnter={(e) => {
-                // Shift+Enter xuống dòng, Enter thường gửi
+            
                 if (!e.shiftKey) {
                   e.preventDefault();
                   handleSendComment();
